@@ -2,9 +2,10 @@
 #define __BASIC_TINKERING_STOP_WATCH__
 
 /**
- * A simple toggleable stop watch
+ * A simple, milliseconds-accurate, toggleable stop watch
  */
-class StopWatch {
+class StopWatch
+{
 public:
   // Convert elapsed milliseconds to seconds.
   static double to_sec(unsigned long elapsed_ms)
