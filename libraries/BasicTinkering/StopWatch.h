@@ -8,7 +8,7 @@ class StopWatch
 {
 public:
   // Convert elapsed milliseconds to seconds.
-  static double to_sec(unsigned long elapsed_ms)
+  static double toSeconds(unsigned long elapsed_ms)
   {
     return static_cast<double>(elapsed_ms) / 1000.0;
   }

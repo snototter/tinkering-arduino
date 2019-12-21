@@ -1,0 +1,66 @@
+#######################################
+# Syntax Coloring Map: BasicTinkering
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+Button												KEYWORD1
+LED														KEYWORD1
+SevenSegmentDisplayTM1637			KEYWORD1
+StopWatch											KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+# Button
+read													KEYWORD2
+isPressed											KEYWORD2
+isHeld												KEYWORD2
+changed												KEYWORD2
+
+# LED
+status												KEYWORD2
+on														KEYWORD2
+off														KEYWORD2
+toggle												KEYWORD2
+startBlinking									KEYWORD2
+blink													KEYWORD2
+stopBlinking									KEYWORD2
+blockingBlink									KEYWORD2
+setValue											KEYWORD2
+fadeIn												KEYWORD2
+fadeOut												KEYWORD2
+
+# SevenSegmentDisplayTM1637
+setBrightness									KEYWORD2
+displayInteger								KEYWORD2
+displayTime										KEYWORD2
+clear													KEYWORD2
+setSegments										KEYWORD2
+digitToSegment								KEYWORD2
+
+# StopWatch
+toSeconds											KEYWORD2
+elapsed												KEYWORD2
+reset													KEYWORD2
+start													KEYWORD2
+toggle												KEYWORD2
+stop													KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+# SevenSegmentDisplayTM1637
+SEG_A													LITERAL1
+SEG_B													LITERAL1
+SEG_C													LITERAL1
+SEG_D													LITERAL1
+SEG_E													LITERAL1
+SEG_F													LITERAL1
+SEG_G													LITERAL1
+SEG_COLON											LITERAL1
+
