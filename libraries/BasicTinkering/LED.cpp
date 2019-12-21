@@ -28,12 +28,12 @@ void LED::off()
   bitWrite(state_, STATE_STATUS, LOW);
 }
 
-void toggle()
+void LED::toggle()
 {
   bitRead(state_, STATE_STATUS) ? off() : on();
 }
 
-void LED::start_blinking(unsigned int time)
+void LED::startBlinking(unsigned int time)
 {
   bitWrite(state_, STATE_BLINK, 1);
   blink_time_ = time;
@@ -47,11 +47,56 @@ void LED::blink()
     return;
   const unsigned long now = millis();
   if ((now - blink_start_) >= blink_time_)
+  {
     toggle();
+    blink_start_ = now;
+  }
 }
 
-void LED::stop_blinking()
+void LED::stopBlinking()
 {
   off();
   bitWrite(state_, STATE_BLINK, 0);
+}
+
+void LED::blockingBlink(unsigned int time, unsigned int n)
+{
+  if (n == 0)
+    return;
+  on();
+  for (unsigned int i = 0; i < 2*n-1; ++i)
+  {
+    delay(time);
+    toggle();
+  }
+  delay(time);
+  off();
+}
+
+void LED::setValue(uint8_t value)
+{
+  analogWrite(pin_, value);
+  bitWrite(state_, STATE_STATUS, value > 127);
+}
+
+void LED::fadeIn(unsigned int time)
+{
+  const unsigned int dt = time / (255 / 5);
+  for (uint8_t brightness = 0; brightness < 255; brightness+=5)
+  {
+    setValue(brightness);
+    delay(dt);
+  }
+  on();
+}
+
+void LED::fadeOut(unsigned int time)
+{
+  const unsigned int dt = time / (255 / 5);
+  for (uint8_t brightness = 255; brightness > 0; brightness-=5)
+  {
+    setValue(brightness);
+    delay(dt);
+  }
+  off();
 }

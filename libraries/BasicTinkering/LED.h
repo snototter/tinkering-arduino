@@ -25,14 +25,35 @@ public:
   // Start non-blocking blinking (~"time" ms on,
   // ~"time" ms off). You must call blink() which
   // takes care of toggling the LED.
-  void start_blinking(unsigned int time);
+  void startBlinking(unsigned int time);
 
   // Loop iteration to be called repeatedly after
   // you set up blinking via start_blinking().
   void blink();
 
-  //TODO
-  void stop_blinking();
+  // Disable blinking, once you're done.
+  void stopBlinking();
+
+  // Blocking call to blink n times ("time" ms on, "time" ms off).
+  void blockingBlink(unsigned int time, unsigned int n);
+
+  // Set a value [0, 255] directly. Ensure that the
+  // LED is wired to a PWM pin!
+  // See
+  // https://www.arduino.cc/reference/en/language/functions/analog-io/analogwrite/
+  // and
+  // https://forum.arduino.cc/index.php?topic=79842.0
+  void setValue(uint8_t value);
+
+  // Slowly increase the brightness [0, 255] over
+  // "time" milliseconds. Ensure that the LED is
+  // wired to a PWM pin! See comments on setValue().
+  void fadeIn(unsigned int time);
+
+  // Slowly decrease brightness from 255 to 0 over
+  // "time" milliseconds. Ensure that the LED is
+  // wired to a PWM pin! See comments on setValue().
+  void fadeOut(unsigned int time);
 
 private:
   // Pin number (digital in).
