@@ -46,6 +46,7 @@ digitToSegment								KEYWORD2
 # StopWatch
 toSeconds											KEYWORD2
 elapsed												KEYWORD2
+isRunning											KEYWORD2
 reset													KEYWORD2
 start													KEYWORD2
 toggle												KEYWORD2

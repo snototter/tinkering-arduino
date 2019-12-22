@@ -54,6 +54,11 @@ public:
     is_running_ = false;
   }
 
+  bool isRunning() const
+  {
+    return is_running_;
+  }
+
 private:
   unsigned long start_time_;
   unsigned long elapsed_;     //< We accumulate elapsed time (needed because of toggle/pause)
