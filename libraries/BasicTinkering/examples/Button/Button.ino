@@ -12,6 +12,10 @@ void setup()
 void loop()
 {
   btn1.read();
+  // If you want to do something only once the user presses the button,
+  // we need to check changed(), then isPressed(). Alternatively, we
+  // could use if (changedToPressed()) { <do something> }.
+  // btn1.isPressed() returns true as long as the button is pressed!
   if (btn1.changed())
   {
     if (btn1.isPressed())
