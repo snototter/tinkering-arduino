@@ -20,6 +20,7 @@ read													KEYWORD2
 isPressed											KEYWORD2
 isHeld												KEYWORD2
 changed												KEYWORD2
+changedToPressed							KEYWORD2
 
 # LED
 status												KEYWORD2

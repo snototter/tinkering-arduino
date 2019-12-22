@@ -102,3 +102,9 @@ bool Button::changed() const
 {
   return bitRead(state_, STATE_CHANGED);
 }
+
+bool Button::changedToPressed() const
+{
+  return bitRead(state_, STATE_CHANGED) & bitRead(state_, STATE_CURRENT);
+}
+

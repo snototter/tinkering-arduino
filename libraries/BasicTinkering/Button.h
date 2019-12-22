@@ -25,6 +25,7 @@ public:
 
   // Returns the current state of the button.
   // Invoke after read().
+  // This will return true as long as the button is pressed!
   bool isPressed() const;
 
   // Returns true if the button is currently active and has
@@ -34,6 +35,10 @@ public:
   // Returns true if the button state changed.
   // Invoke after read().
   bool changed() const;
+
+  // For convenience: returns true only for the first time after the user
+  // pressed the button. Basically just returns changed() && isPressed().
+  bool changedToPressed() const;
 
 private:
   // Pin number (digital in)
