@@ -93,11 +93,9 @@ const uint8_t ssd_seg_reset[] =
 bool talk_in_progress = false;
 
 
+// Initialization.
 void setup()
 {
-  // Initialization (called after initializing the globals,
-  // before first loop iteration).
-
   scw_reset();
   
 #ifdef DEBUG_OUTPUT
@@ -106,6 +104,7 @@ void setup()
 }
 
 
+// Reset the session chair's watch.
 void scw_reset()
 {
   talk_in_progress = false;
@@ -121,39 +120,50 @@ void scw_reset()
   stop_watch.reset();
 }
 
+
+// Query stop watch time and display it as "MM:SS".
+unsigned int updateDisplayTime()
+{
+  const unsigned int elapsed_sec = stop_watch.elapsed() / 1000;
+  const unsigned int sec = elapsed_sec % 60;
+  const unsigned int min = elapsed_sec / 60;
+  display.displayTime(min, sec);
+  return elapsed_sec;
+}
+
+// Main loop.
 void loop()
 {
+  // Update button states.
   btn_toggle.read();
   btn_reset.read();
+
+  // Handle start/pause/stop.
+  if (btn_toggle.changedToPressed())
+  {
+    talk_in_progress = true;
+    stop_watch.toggle();
+    //TODO remove
+    led_remainder.toggle();
+  }
+
+  
+  if (btn_reset.isHeld())
+  {
+    scw_reset();
+  }
+
   if (talk_in_progress)
   {
-    if (btn_toggle.changedToPressed())
+    if (stop_watch.isRunning())
     {
-      stop_watch.toggle();
-      led_remainder.toggle();
-    }
-
-    if (btn_reset.isHeld())
-    {
-      scw_reset();
+      const unsigned int elapsed_sec = updateDisplayTime();
+      // TODO check remaining/exceeded time, set LEDs correspondingly
     }
     else
     {
-      const unsigned long elapsed_ms = stop_watch.elapsed();
-      const unsigned int sec = (elapsed_ms % 60000)/1000;
-      const unsigned int min = elapsed_ms / 60000;
-      display.displayTime(min, sec);
+      // TODO disable LEDs
     }
-  }
-  else
-  {
-    if (btn_toggle.changedToPressed())
-    {
-      talk_in_progress = true;
-      led_remainder.on();
-      stop_watch.start();
-    }
-    // Timer has been reset, show "--:--".
   }
 }
 
