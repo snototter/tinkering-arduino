@@ -8,6 +8,7 @@
 
 Button												KEYWORD1
 LED														KEYWORD1
+Potentiometer									KEYWORD1
 SevenSegmentDisplayTM1637			KEYWORD1
 StopWatch											KEYWORD1
 
@@ -35,6 +36,10 @@ setValue											KEYWORD2
 fadeIn												KEYWORD2
 fadeOut												KEYWORD2
 
+# Potentiometer
+readBin												KEYWORD2
+readValue											KEYWORD2
+
 # SevenSegmentDisplayTM1637
 setBrightness									KEYWORD2
 displayInteger								KEYWORD2
@@ -55,6 +60,9 @@ stop													KEYWORD2
 #######################################
 # Constants (LITERAL1)
 #######################################
+
+# Potentiometer
+BT_ADC_RESOLUTION							LITERAL1
 
 # SevenSegmentDisplayTM1637
 SEG_A													LITERAL1
