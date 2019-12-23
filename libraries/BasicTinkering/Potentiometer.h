@@ -39,6 +39,12 @@ public:
     return analogRead(pin_) / (BT_ADC_RESOLUTION / NUM_BINS);
   }
 
+  // Return the templated number of bins.
+  uint16_t numBins() const
+  {
+    return NUM_BINS;
+  }
+
 private:
   // Pin number (digital in).
   uint8_t pin_;

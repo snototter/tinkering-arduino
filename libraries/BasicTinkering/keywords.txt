@@ -39,6 +39,7 @@ fadeOut												KEYWORD2
 # Potentiometer
 readBin												KEYWORD2
 readValue											KEYWORD2
+numBins												KEYWORD2
 
 # SevenSegmentDisplayTM1637
 setBrightness									KEYWORD2
