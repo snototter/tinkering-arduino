@@ -17,12 +17,12 @@
 
 // Duration of slot (milliseconds)
 // Set to 0 to disable LEDs
-#define PRESENTATION_SLOT    (7*60*1000)
+#define DURATION_PRESENTATION_SLOT    (7*60000)
 
 // Light up first LED TAU_REMAINDER milliseconds before
 // the end of the allocated slot to indicate that "the end is near".
 //
-// For example, 60000 (1 minute before end)
+// You have to ensure that TAU_REMAINDER < DURATION_PRESENTATION_SLOT.
 #define TAU_REMAINDER (60000)
 
 // Start blinking LEDs if speaker exceeds more than
@@ -30,6 +30,10 @@
 //
 // For example, 10000 (10 seconds after slot should've ended)
 #define TAU_EXCEED   (10000)
+
+// How many milliseconds the LED should be on/off when blinking, i.e.
+// a full blink cycle would be 2xDURATION_BLINKING ms.
+#define DURATION_BLINKING 500
 
 
 //-----------------------------------------------------------------------------
@@ -92,6 +96,10 @@ const uint8_t ssd_seg_reset[] =
 // current state.
 bool talk_in_progress = false;
 
+// We use the non-blocking LED blink calls, thus we need to keep track
+// of whether we already started blinking or not...
+bool led_blinking_started = false;
+
 
 // Initialization.
 void setup()
@@ -108,10 +116,15 @@ void setup()
 void scw_reset()
 {
   talk_in_progress = false;
+  led_blinking_started = false;
   
   // Turn off all LEDs.
+  led_remainder.stopBlinking();
   led_remainder.off();
+
+  led_timeout.stopBlinking();
   led_timeout.off();
+  //TODO Add third LED if we want to implement it
 
   // Show reset on display.
   display.setSegments(ssd_seg_reset);
@@ -131,6 +144,69 @@ unsigned int updateDisplayTime()
   return elapsed_sec;
 }
 
+// Ensures that the LEDs are flashing.
+void warnSlotExceeded()
+{
+  if (!led_blinking_started)
+  {
+    //TODO Add third LED if we want to implement it
+    led_blinking_started = true;
+    led_remainder.startBlinking(DURATION_BLINKING);
+    led_timeout.startBlinking(DURATION_BLINKING);
+  }
+
+  // Only blink as long as the stop watch is active/speaker
+  // is still talking.
+  if (stop_watch.isRunning())
+  {
+    led_remainder.blink();
+    led_timeout.blink();
+  }
+  else
+  {
+    led_remainder.off();
+    led_timeout.off();
+  }
+}
+
+// Set LEDs according to talk progress.
+void updateLEDs(unsigned int elapsed_sec)
+{
+  if (talk_in_progress)
+  {
+    if (!DURATION_PRESENTATION_SLOT)
+    {
+      // LEDs are disabled.
+      //TODO Add third LED if we want to implement it
+      led_remainder.off();
+      led_timeout.off();
+    }
+    else
+    {
+      if (elapsed_sec < DURATION_PRESENTATION_SLOT)
+      {
+        //TODO Add third LED if we want to implement it (always on if stop watch.isRunning())
+        if (elapsed_sec >= (DURATION_PRESENTATION_SLOT - TAU_REMAINDER))
+          led_remainder.on();
+      }
+      else
+      {
+        if (elapsed_sec < (DURATION_PRESENTATION_SLOT + TAU_EXCEED))
+          led_timeout.on();
+        else
+          warnSlotExceeded();
+      }
+    }
+  }
+  else
+  {
+    // Turn the lights off
+    //TODO Add third LED if we want to implement it
+    led_remainder.off();
+    led_timeout.off();
+  }
+}
+
 // Main loop.
 void loop()
 {
@@ -145,6 +221,7 @@ void loop()
     stop_watch.toggle();
     //TODO remove
     led_remainder.toggle();
+    //TODO add progress LED if we want to implement it
   }
 
   
@@ -155,15 +232,9 @@ void loop()
 
   if (talk_in_progress)
   {
-    if (stop_watch.isRunning())
-    {
-      const unsigned int elapsed_sec = updateDisplayTime();
-      // TODO check remaining/exceeded time, set LEDs correspondingly
-    }
-    else
-    {
-      // TODO disable LEDs
-    }
+    // Display talk duration & light up LEDs accordingly.
+    const unsigned int elapsed_sec = updateDisplayTime();
+    updateLEDs(elapsed_sec);
   }
 }
 
