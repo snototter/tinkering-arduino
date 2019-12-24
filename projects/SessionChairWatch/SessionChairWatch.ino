@@ -11,15 +11,16 @@
 // Buttons are software-debounced, continuously polled. No
 // interrupt logic for this simple project.
 
+
 //-----------------------------------------------------------------------------
 // Configuration
 // 2019/12 - Configuration values according to VWA lecture requirements.
 
-// Duration of slot (milliseconds)
-// Set to 0 to disable LEDs
+// Duration of presentation slot inmilliseconds.
+// Set to 0 to disable notification LEDs.
 #define DURATION_PRESENTATION_SLOT    (7*60000)
 
-// Light up first LED TAU_REMAINDER milliseconds before
+// Light up first notification LED TAU_REMAINDER milliseconds before
 // the end of the allocated slot to indicate that "the end is near".
 //
 // You have to ensure that TAU_REMAINDER < DURATION_PRESENTATION_SLOT.
@@ -28,11 +29,11 @@
 // Start blinking LEDs if speaker exceeds more than
 // TAU_EXCEED milliseconds of the allocated presentation slot.
 //
-// For example, 10000 (10 seconds after slot should've ended)
+// For example, 10000 (10 seconds after slot should've ended).
 #define TAU_EXCEED   (10000)
 
 // How many milliseconds the LED should be on/off when blinking, i.e.
-// a full blink cycle would be 2xDURATION_BLINKING ms.
+// a full blink cycle would be 2*DURATION_BLINKING milliseconds.
 #define DURATION_BLINKING 500
 
 
@@ -41,8 +42,9 @@
 
 #define PIN_SSD_CLK           2
 #define PIN_SSD_DIO           3
+#define PIN_LED_STOP_WATCH    8
 #define PIN_LED_REMAINDER     9
-#define PIN_LED_TIMEOUT      10
+#define PIN_LED_TIMEOUT       10
 #define PIN_BTN_RESET         6
 #define PIN_BTN_TOGGLE_WATCH  7
 
@@ -60,29 +62,54 @@
 // 7-segment display brightness [0,7].
 #define SSD_BRIGHTNESS        7
 
-#define DEBUG_OUTPUT
+// Enable to log debug messages on the serial monitor.
+//#define DEBUG_OUTPUT
+
+// Enable if we wired up a third LED which lights up whenever the stop watch
+// is running.
+#define USE_STOP_WATCH_LED
+
 
 //-----------------------------------------------------------------------------
-// Utilities for slightly cleaner code:
+// Include external utilities for slightly cleaner code:
+
 #include <Button.h>
 #include <LED.h>
 #include <SevenSegmentDisplay.h>
 #include <StopWatch.h>
 
+
 //-----------------------------------------------------------------------------
 // Program variables:
+
+// Reset button to turn off all LEDs & stop watch.
 Button btn_reset( PIN_BTN_RESET,        BTN_DEBOUNCE_MILLIS, 500);
+
+// Button to toggle stop watch (start/pause/stop).
 Button btn_toggle(PIN_BTN_TOGGLE_WATCH, BTN_DEBOUNCE_MILLIS);
 
+// Notification LED indicating that the slot will be over soon.
 LED led_remainder(PIN_LED_REMAINDER);
+
+// Notification LED indicating that the slot is over/has been exceeded.
 LED led_timeout(PIN_LED_TIMEOUT);
 
+// Notification LED indicating whether the stop watch is currently
+// running (or paused).
+#ifdef USE_STOP_WATCH_LED
+LED led_stop_watch(PIN_LED_STOP_WATCH);
+#endif // USE_STOP_WATCH_LED
+
+// The 4-digit 7-segment display to show the elapsed time.
 SevenSegmentDisplayTM1637 display(PIN_SSD_CLK, PIN_SSD_DIO, SSD_BRIGHTNESS);
 
+// Should be obvious...
 StopWatch stop_watch;
 
+// The previously displayed presentation time.
+unsigned int prev_elapsed_sec;
 
-// 7-segment display data show "--:--"
+// Raw 7-segment display data to show "--:--", i.e. we're in reset/init state.
 const uint8_t ssd_seg_reset[] = 
 {
   SEG_G,
@@ -119,18 +146,24 @@ void scw_reset()
   led_blinking_started = false;
   
   // Turn off all LEDs.
+  // "stopBlinking" implicitly calls off(), so it even works for
+  // non-blinking LEDs.
   led_remainder.stopBlinking();
-  led_remainder.off();
-
   led_timeout.stopBlinking();
-  led_timeout.off();
-  //TODO Add third LED if we want to implement it
+
+#ifdef USE_STOP_WATCH_LED
+  led_stop_watch.off();
+#endif // USE_STOP_WATCH_LED
 
   // Show reset on display.
   display.setSegments(ssd_seg_reset);
 
   // Reset stop watch.
   stop_watch.reset();
+
+  // Set to invalid number (which doesn't fit on the
+  // 7-segment display).
+  prev_elapsed_sec = 10000;
 }
 
 
@@ -138,25 +171,30 @@ void scw_reset()
 unsigned int updateDisplayTime()
 {
   const unsigned int elapsed_sec = stop_watch.elapsed() / 1000;
-  const unsigned int sec = elapsed_sec % 60;
-  const unsigned int min = elapsed_sec / 60;
-  display.displayTime(min, sec);
+  // Update display only if time has changed.
+  if (elapsed_sec != prev_elapsed_sec)
+  {
+    prev_elapsed_sec = elapsed_sec;
+    const unsigned int sec = elapsed_sec % 60;
+    const unsigned int min = elapsed_sec / 60;
+    display.displayTime(min, sec);
+  }
   return elapsed_sec;
 }
 
-// Ensures that the LEDs are flashing.
+
+// Ensures that the notification LEDs are (non-blocking) blinking.
 void warnSlotExceeded()
 {
   if (!led_blinking_started)
   {
-    //TODO Add third LED if we want to implement it
     led_blinking_started = true;
     led_remainder.startBlinking(DURATION_BLINKING);
     led_timeout.startBlinking(DURATION_BLINKING);
   }
 
-  // Only blink as long as the stop watch is active/speaker
-  // is still talking.
+  // Only blink as long as the stop watch is active, i.e. 
+  // speaker is still talking.
   if (stop_watch.isRunning())
   {
     led_remainder.blink();
@@ -174,23 +212,35 @@ void updateLEDs(unsigned int elapsed_sec)
 {
   if (talk_in_progress)
   {
+#ifdef USE_STOP_WATCH_LED
+    // LED "led_stop_watch" indicates whether the stop
+    // watch is currently running.
+    if (stop_watch.isRunning())
+      led_stop_watch.on();
+    else
+      led_stop_watch.off();
+#endif // USE_STOP_WATCH_LED
+
     if (!DURATION_PRESENTATION_SLOT)
     {
-      // LEDs are disabled.
-      //TODO Add third LED if we want to implement it
+      // Notification LEDs are disabled.
       led_remainder.off();
       led_timeout.off();
     }
     else
     {
+      // Check if the elapsed time is close to the end of the slot or
+      // if the speaker already exceeded his allocated slot.
       if (elapsed_sec < DURATION_PRESENTATION_SLOT)
       {
-        //TODO Add third LED if we want to implement it (always on if stop watch.isRunning())
+        // Light up notification LED ("hurry up").
         if (elapsed_sec >= (DURATION_PRESENTATION_SLOT - TAU_REMAINDER))
           led_remainder.on();
       }
       else
       {
+        // Light up second notification LED ("Time is over") or start
+        // flashing once grace period is over.
         if (elapsed_sec < (DURATION_PRESENTATION_SLOT + TAU_EXCEED))
           led_timeout.on();
         else
@@ -198,13 +248,17 @@ void updateLEDs(unsigned int elapsed_sec)
       }
     }
   }
+  /* TODO test (reset uses scw_reset() which already turns off all LEDs, so
+   *  no need to do it here again).
   else
   {
-    // Turn the lights off
-    //TODO Add third LED if we want to implement it
+    // We're in reset/init state, so turn off all the LEDs.
     led_remainder.off();
     led_timeout.off();
-  }
+#ifdef USE_STOP_WATCH_LED
+    led_stop_watch.off();
+#endif // USE_STOP_WATCH_LED
+  }*/
 }
 
 // Main loop.
@@ -219,20 +273,17 @@ void loop()
   {
     talk_in_progress = true;
     stop_watch.toggle();
-    //TODO remove
-    led_remainder.toggle();
-    //TODO add progress LED if we want to implement it
   }
 
-  
+  // Check if we should reset the session chair's watch.
   if (btn_reset.isHeld())
   {
     scw_reset();
   }
 
+  // Display talk duration & light up LEDs if speaker is presenting.
   if (talk_in_progress)
   {
-    // Display talk duration & light up LEDs accordingly.
     const unsigned int elapsed_sec = updateDisplayTime();
     updateLEDs(elapsed_sec);
   }
