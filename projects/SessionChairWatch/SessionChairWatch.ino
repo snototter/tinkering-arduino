@@ -14,25 +14,23 @@
 
 //-----------------------------------------------------------------------------
 // Configuration
-// 2019/12 - Configuration values according to VWA lecture requirements.
+// TODO Configure for VWA 2019/2020.
 
 // Duration of presentation slot in seconds.
 // Set to 0 to disable notification LEDs.
-#define DURATION_PRESENTATION_SLOT    20
-//(7*60000)
+#define DURATION_PRESENTATION_SLOT    4
 
 // Light up first notification LED TAU_REMAINDER seconds before
 // the end of the allocated slot to indicate that "the end is near".
 //
 // You have to ensure that TAU_REMAINDER < DURATION_PRESENTATION_SLOT.
-#define TAU_REMAINDER 5
-//(60)
+#define TAU_REMAINDER  2
 
 // Start blinking LEDs if speaker exceeds more than
 // TAU_EXCEED seconds of the allocated presentation slot.
 //
 // For example, 10 seconds after slot should've ended.
-#define TAU_EXCEED   (10)
+#define TAU_EXCEED     2
 
 // How many milliseconds the LED should be on/off when blinking, i.e.
 // a full blink cycle would be 2*DURATION_BLINKING milliseconds.
@@ -82,8 +80,12 @@
 
 #include <Button.h>
 #include <LED.h>
-#include <SevenSegmentDisplay.h>
 #include <StopWatch.h>
+
+// We want to query the previously shown data (see reset/display flashing
+// implemented in scw_reset()).
+#define SSD_STORE_SEGMENTS
+#include <SevenSegmentDisplay.h>
 
 
 //-----------------------------------------------------------------------------
@@ -163,7 +165,21 @@ void scw_reset()
   led_stop_watch.on();
 #endif // USE_STOP_WATCH_LED
 
+#ifdef SSD_STORE_SEGMENTS
+  uint8_t segments[4];
+  display.getSegments(segments);
+  for (uint8_t i = 0; i < 3; ++i)
+  {
+    display.setSegments(ssd_seg_reset);
+    delay(500);
+    display.setSegments(segments);
+    delay(500);
+  }
+#else // SSD_STORE_SEGMENTS
+  // If we cannot query the currently displayed data, leave the
+  // display as is.
   delay(1000);
+#endif // SSD_STORE_SEGMENTS
   
   // Turn off all LEDs.
   // "stopBlinking" implicitly calls off(), so it even works for
@@ -206,24 +222,30 @@ unsigned int updateDisplayTime()
 // Ensures that the notification LEDs are (non-blocking) blinking.
 void warnSlotExceeded()
 {
-  if (!led_blinking_started)
-  {
-    led_blinking_started = true;
-    led_remainder.startBlinking(DURATION_BLINKING);
-    led_timeout.startBlinking(DURATION_BLINKING);
-  }
-
   // Only blink as long as the stop watch is active, i.e. 
   // speaker is still talking.
   if (stop_watch.isRunning())
   {
+    if (!led_blinking_started)
+    {
+      // Configure LEDs such that they alternate.
+      led_blinking_started = true;
+      led_remainder.on();
+      led_remainder.startBlinking(DURATION_BLINKING);
+      led_timeout.off();
+      led_timeout.startBlinking(DURATION_BLINKING);
+    }
     led_remainder.blink();
     led_timeout.blink();
   }
   else
   {
+    // Stop watch has been paused, turn off lights...
     led_remainder.off();
     led_timeout.off();
+    // ... however, if the talk continues, we want to
+    // alternate the LEDs again.
+    led_blinking_started = false;
   }
 }
 
