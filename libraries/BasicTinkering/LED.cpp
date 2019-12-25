@@ -6,7 +6,7 @@
 #define STATE_BLINK   1
 
 
-LED::LED(uint8_t pin) : pin_(pin), state_(0x00)
+LED::LED(uint8_t pin) : pin_(pin), state_(0x00), dim_value_(0x00)
 {
   pinMode(pin_, OUTPUT);
 }
@@ -18,8 +18,15 @@ bool LED::status() const
 
 void LED::on()
 {
-  digitalWrite(pin_, HIGH);
-  bitWrite(state_, STATE_STATUS, HIGH);
+  if (dim_value_)
+  {
+    setValue(dim_value_);
+  }
+  else
+  {
+    digitalWrite(pin_, HIGH);
+    bitWrite(state_, STATE_STATUS, HIGH);
+  }
 }
 
 void LED::off()
@@ -77,6 +84,11 @@ void LED::setValue(uint8_t value)
 {
   analogWrite(pin_, value);
   bitWrite(state_, STATE_STATUS, value > 127);
+}
+
+void LED::setDimValue(uint8_t value)
+{
+  dim_value_ = value;
 }
 
 void LED::fadeIn(unsigned int time)

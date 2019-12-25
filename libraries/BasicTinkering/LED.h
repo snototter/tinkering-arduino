@@ -45,6 +45,13 @@ public:
   // https://forum.arduino.cc/index.php?topic=79842.0
   void setValue(uint8_t value);
 
+  // Configures the LED to be dimmed from now on.
+  // Ensure that the LED is wired to a PWM pin!
+  // See comments on setValue().
+  // * Use value=0 to disable dimming.
+  // * This call doesn't turn on/off the LED.
+  void setDimValue(uint8_t value);
+
   // Slowly increase the brightness [0, 255] over
   // "time" milliseconds. Ensure that the LED is
   // wired to a PWM pin! See comments on setValue().
@@ -61,6 +68,10 @@ private:
 
   // Internal state variable.
   uint8_t state_;
+
+  // Stores the selected dim value (requires PWM pin,
+  // see also setDimValue()).
+  uint8_t dim_value_;
 
   // Number of milliseconds the LED should be
   // on or off while blinking.

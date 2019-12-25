@@ -33,6 +33,7 @@ blink													KEYWORD2
 stopBlinking									KEYWORD2
 blockingBlink									KEYWORD2
 setValue											KEYWORD2
+setDimValue										KEYWORD2
 fadeIn												KEYWORD2
 fadeOut												KEYWORD2
 
