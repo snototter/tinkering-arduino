@@ -48,6 +48,7 @@ displayInteger								KEYWORD2
 displayTime										KEYWORD2
 clear													KEYWORD2
 setSegments										KEYWORD2
+getSegments										KEYWORD2
 digitToSegment								KEYWORD2
 
 # StopWatch

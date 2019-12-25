@@ -13,6 +13,11 @@ SevenSegmentDisplayTM1637::SevenSegmentDisplayTM1637(uint8_t pin_clk,
   uint8_t pin_dio, uint8_t brightness, unsigned long bit_delay) :
   pin_clk_(pin_clk), pin_dio_(pin_dio), bit_delay_(bit_delay)
 {
+#ifdef SSD_STORE_SEGMENTS
+  for (uint8_t i = 0; i < 4; ++i)
+    segments_[i] = 0;
+#endif // SSD_STORE_SEGMENTS
+
   setBrightness(brightness);
 
   // Set up pins (use pull-up to pull CLK and DIO up)
@@ -28,14 +33,14 @@ void SevenSegmentDisplayTM1637::setBrightness(uint8_t brightness)
   brightness_ = (brightness & 0x07) | 0x08;
 }
 
-void SevenSegmentDisplayTM1637::clear() const
+void SevenSegmentDisplayTM1637::clear()
 {
   const uint8_t data[] = { 0, 0, 0, 0 };
   setSegments(data);
 }
 
 
-void SevenSegmentDisplayTM1637::displayInteger(int x) const
+void SevenSegmentDisplayTM1637::displayInteger(int x)
 {
   // Sanity check
   if (x > 9999 || x < -999)
@@ -75,7 +80,7 @@ void SevenSegmentDisplayTM1637::displayInteger(int x) const
   setSegments(segments);
 }
 
-void SevenSegmentDisplayTM1637::displayTime(uint8_t a, uint8_t b) const
+void SevenSegmentDisplayTM1637::displayTime(uint8_t a, uint8_t b)
 {
   if (a > 99 || b > 99)
     return;
@@ -88,7 +93,7 @@ void SevenSegmentDisplayTM1637::displayTime(uint8_t a, uint8_t b) const
   setSegments(segments);
 }
 
-void SevenSegmentDisplayTM1637::setSegments(const uint8_t segments[], uint8_t num_digits, uint8_t first_pos) const
+void SevenSegmentDisplayTM1637::setSegments(const uint8_t segments[], uint8_t num_digits, uint8_t first_pos)
 {
   // Send COMM1
   start();
@@ -107,12 +112,27 @@ void SevenSegmentDisplayTM1637::setSegments(const uint8_t segments[], uint8_t nu
   start();
   sendByte(0x80 + (brightness_ & 0x0f));
   stop();
+
+#ifdef SSD_STORE_SEGMENTS
+  for (uint8_t i = 0; i < 4; ++i)
+    segments_[i] = 0;
+  for (uint8_t i = 0; i < num_digits; ++i)
+    segments_[i+first_pos] = segments[i];
+#endif // SSD_STORE_SEGMENTS
 }
 
 uint8_t SevenSegmentDisplayTM1637::digitToSegment(uint8_t digit) const
 {
   return lookup_digit_segments[digit & 0x0f];
 }
+
+#ifdef SSD_STORE_SEGMENTS
+void SevenSegmentDisplayTM1637::getSegments(uint8_t segments[]) const
+{
+  for (uint8_t i = 0; i < 4; ++i)
+    segments[i] = segments_[i];
+}
+#endif // SSD_STORE_SEGMENTS
 
 void SevenSegmentDisplayTM1637::start() const
 {

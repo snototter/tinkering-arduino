@@ -10,6 +10,10 @@
 #define SEG_G     0b01000000
 #define SEG_COLON 0b10000000
 
+// If you need to query the currently set segment data,
+// define this flag before #includ(e)ing.
+#define SSD_STORE_SEGMENTS
+
 /**
  * Utility for 4-digit 7-segment displays using TM1637.
  */
@@ -27,21 +31,28 @@ public:
   void setBrightness(uint8_t brightness);
 
   // Display the integer -999 <= x <= 9999, right-aligned.
-  void displayInteger(int x) const;
+  void displayInteger(int x);
 
   // Display a time, i.e. a:b (numbers will be zero-padded).
   // You are responsible of providing sane inputs (that is,
   // "99:99" would be displayed, too).
-  void displayTime(uint8_t a, uint8_t b) const;
+  void displayTime(uint8_t a, uint8_t b);
 
   // Clear the display
-  void clear() const;
+  void clear();
 
   // Set the segments directly
-  void setSegments(const uint8_t segments[], uint8_t num_digits = 4, uint8_t first_pos = 0) const;
+  void setSegments(const uint8_t segments[], uint8_t num_digits = 4, uint8_t first_pos = 0);
 
   // Get segment gfedcba encoding for digits 0-9, A-F
   uint8_t digitToSegment(uint8_t digit) const;
+
+#ifdef SSD_STORE_SEGMENTS
+  // Fills the (4-element!) segments array with the currently displayed
+  // segments. Note that this won't work upon program start, i.e. you
+  // have to display...() something first!
+  void getSegments(uint8_t segments[]) const;
+#endif // SSD_STORE_SEGMENTS
 
 private:
   // Pin number for CLK
@@ -52,6 +63,10 @@ private:
 
   // Display brightness level in [0,7]
   uint8_t brightness_;
+
+#ifdef SSD_STORE_SEGMENTS
+  uint8_t segments_[4];
+#endif // SSD_STORE_SEGMENTS
 
   // Delay in microseconds for sending bits to the I2C
   unsigned long bit_delay_;
