@@ -83,7 +83,7 @@ void LED::blockingBlink(unsigned int time, unsigned int n)
 void LED::setValue(uint8_t value)
 {
   analogWrite(pin_, value);
-  bitWrite(state_, STATE_STATUS, value > 127);
+  bitWrite(state_, STATE_STATUS, value > 0);
 }
 
 void LED::setDimValue(uint8_t value)
