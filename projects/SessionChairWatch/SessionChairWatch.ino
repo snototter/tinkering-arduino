@@ -16,21 +16,23 @@
 // Configuration
 // 2019/12 - Configuration values according to VWA lecture requirements.
 
-// Duration of presentation slot inmilliseconds.
+// Duration of presentation slot in seconds.
 // Set to 0 to disable notification LEDs.
-#define DURATION_PRESENTATION_SLOT    (7*60000)
+#define DURATION_PRESENTATION_SLOT    20
+//(7*60000)
 
-// Light up first notification LED TAU_REMAINDER milliseconds before
+// Light up first notification LED TAU_REMAINDER seconds before
 // the end of the allocated slot to indicate that "the end is near".
 //
 // You have to ensure that TAU_REMAINDER < DURATION_PRESENTATION_SLOT.
-#define TAU_REMAINDER (60000)
+#define TAU_REMAINDER 5
+//(60)
 
 // Start blinking LEDs if speaker exceeds more than
-// TAU_EXCEED milliseconds of the allocated presentation slot.
+// TAU_EXCEED seconds of the allocated presentation slot.
 //
-// For example, 10000 (10 seconds after slot should've ended).
-#define TAU_EXCEED   (10000)
+// For example, 10 seconds after slot should've ended.
+#define TAU_EXCEED   (10)
 
 // How many milliseconds the LED should be on/off when blinking, i.e.
 // a full blink cycle would be 2*DURATION_BLINKING milliseconds.
@@ -40,13 +42,18 @@
 //-----------------------------------------------------------------------------
 // Wiring configuration.
 
+// 7-segment display.
 #define PIN_SSD_CLK           2
 #define PIN_SSD_DIO           3
-#define PIN_LED_STOP_WATCH    8
+
+// LEDs (on PWM pins).
+#define PIN_LED_STOP_WATCH    6
 #define PIN_LED_REMAINDER     9
-#define PIN_LED_TIMEOUT       10
-#define PIN_BTN_RESET         6
-#define PIN_BTN_TOGGLE_WATCH  7
+#define PIN_LED_TIMEOUT       11
+
+// Buttons.
+#define PIN_BTN_RESET         4
+#define PIN_BTN_TOGGLE_WATCH  5
 
 
 //-----------------------------------------------------------------------------
@@ -60,7 +67,7 @@
 #define BTN_RESET_HOLD        500
 
 // 7-segment display brightness [0,7].
-#define SSD_BRIGHTNESS        7
+#define SSD_BRIGHTNESS        3
 
 // Enable to log debug messages on the serial monitor.
 //#define DEBUG_OUTPUT
@@ -83,7 +90,7 @@
 // Program variables:
 
 // Reset button to turn off all LEDs & stop watch.
-Button btn_reset( PIN_BTN_RESET,        BTN_DEBOUNCE_MILLIS, 500);
+Button btn_reset(PIN_BTN_RESET,        BTN_DEBOUNCE_MILLIS, 500);
 
 // Button to toggle stop watch (start/pause/stop).
 Button btn_toggle(PIN_BTN_TOGGLE_WATCH, BTN_DEBOUNCE_MILLIS);
@@ -131,6 +138,10 @@ bool led_blinking_started = false;
 // Initialization.
 void setup()
 {
+  // Blue and red LEDs are pretty bright, so dim them down.
+  led_remainder.setDimValue(128);
+  led_timeout.setDimValue(64);
+  
   scw_reset();
   
 #ifdef DEBUG_OUTPUT
@@ -144,6 +155,15 @@ void scw_reset()
 {
   talk_in_progress = false;
   led_blinking_started = false;
+
+  // Turn on all lights for a short amount of time.
+  led_remainder.on();
+  led_timeout.on();
+#ifdef USE_STOP_WATCH_LED
+  led_stop_watch.on();
+#endif // USE_STOP_WATCH_LED
+
+  delay(1000);
   
   // Turn off all LEDs.
   // "stopBlinking" implicitly calls off(), so it even works for
@@ -242,7 +262,10 @@ void updateLEDs(unsigned int elapsed_sec)
         // Light up second notification LED ("Time is over") or start
         // flashing once grace period is over.
         if (elapsed_sec < (DURATION_PRESENTATION_SLOT + TAU_EXCEED))
+        {
           led_timeout.on();
+          led_remainder.off();
+        }
         else
           warnSlotExceeded();
       }
