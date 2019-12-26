@@ -67,6 +67,9 @@
 // 7-segment display brightness [0,7].
 #define SSD_BRIGHTNESS        3
 
+// Delay in microseconds between bit transition of TM1637
+#define SSD_BIT_DELAY 150
+
 // Enable to log debug messages on the serial monitor.
 //#define DEBUG_OUTPUT
 
@@ -92,7 +95,7 @@
 // Program variables:
 
 // Reset button to turn off all LEDs & stop watch.
-Button btn_reset(PIN_BTN_RESET,        BTN_DEBOUNCE_MILLIS, 500);
+Button btn_reset(PIN_BTN_RESET, BTN_DEBOUNCE_MILLIS, BTN_RESET_HOLD);
 
 // Button to toggle stop watch (start/pause/stop).
 Button btn_toggle(PIN_BTN_TOGGLE_WATCH, BTN_DEBOUNCE_MILLIS);
@@ -110,7 +113,7 @@ LED led_stop_watch(PIN_LED_STOP_WATCH);
 #endif // USE_STOP_WATCH_LED
 
 // The 4-digit 7-segment display to show the elapsed time.
-SevenSegmentDisplayTM1637 display(PIN_SSD_CLK, PIN_SSD_DIO, SSD_BRIGHTNESS);
+SevenSegmentDisplayTM1637 display(PIN_SSD_CLK, PIN_SSD_DIO, SSD_BRIGHTNESS, SSD_BIT_DELAY);
 
 // Should be obvious...
 StopWatch stop_watch;
@@ -166,12 +169,13 @@ void scw_reset()
 #endif // USE_STOP_WATCH_LED
 
 #ifdef SSD_STORE_SEGMENTS
+  // Flash the previously shown data on the display twice before resetting.
   uint8_t segments[4];
   display.getSegments(segments);
-  for (uint8_t i = 0; i < 3; ++i)
+  for (uint8_t i = 0; i < 2; ++i)
   {
     display.setSegments(ssd_seg_reset);
-    delay(500);
+    delay(300);
     display.setSegments(segments);
     delay(500);
   }
