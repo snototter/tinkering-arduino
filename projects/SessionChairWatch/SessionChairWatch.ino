@@ -68,10 +68,8 @@
 // resets ;-)
 #define BTN_RESET_HOLD        500
 
-// 
-
 // 7-segment display brightness [0,7].
-#define SSD_BRIGHTNESS        3
+#define SSD_BRIGHTNESS        7
 
 // Delay in microseconds between bit transition of TM1637
 #define SSD_BIT_DELAY 50
