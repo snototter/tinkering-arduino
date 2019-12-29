@@ -15,8 +15,7 @@ Deployable tinkering projects.
 ## Automated Plant Watering
 * A low-power tinkering project to water my tomatoes and chili plants.
 * Source at `projects/Garduino`.
-
-TODO (check disk backup for ino files)
+* Only useful to lookup stuff on interrupts, watch dog timers, low-power consumption, setting/using ADC reference voltage, measuring battery levels, etc. Due to external library updates, this project doesn't build currently.
 
 ![Example image for Garduino](./projects/Garduino/garduino.jpg "The magic watering box")
 
