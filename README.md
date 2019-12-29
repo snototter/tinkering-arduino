@@ -2,6 +2,11 @@
 Tinkering projects using Arduino. This repository consists of custom libraries and some of my projects.
 
 Overview:
-* `libraries/BasicTinkering` - A collection of commonly used Arduino stuff I need for tinkering, e.g. 7-segment displays, (debouncing) buttons, potentiometers, ...
-* `projects/SessionChairWatch` - A stop watch for session chairs to time presentations, notify speakers of their last X minutes, go crazy once they exceed their allocated slot.
+* `libraries/BasicTinkering` - A collection of commonly used Arduino stuff I need for tinkering, in particular:
+  * A `Button` wrapper for software-debounced push-buttons/triggers.
+  * An `LED` wrapper which adds blinking/fading capabilities (if LED is wired to a PWM-enabled pin).
+  * A `Potentiometer` wrapper which allows binning the potentiometer value.
+  * A `SevenSegmentDisplay` wrapper currently supporting `TM1637` digital tubes (4-digit 7-segment display).
+  * A `StopWatch` to measure time.
+* `projects/SessionChairWatch` - A stop watch for session chairs to time presentations, notify speakers of their last X minutes and go crazy once they exceed their allocated slot.<br/>![Example image for Session Chair project](./projects/SessionChairWatch/session-chair.jpg "Session Chair's Stop Watch")
 * `garduino` - TODO (check disk backup for ino files) - watering my tomatoes and chili plants
