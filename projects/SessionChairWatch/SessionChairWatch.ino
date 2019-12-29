@@ -14,27 +14,31 @@
 
 //-----------------------------------------------------------------------------
 // Configuration
-// TODO Configure for VWA 2019/2020.
+// 2019-12-29 Parameters set for final VWA presentations 2019/2020.
 
 // Duration of presentation slot in seconds.
 // Set to 0 to disable notification LEDs.
-#define DURATION_PRESENTATION_SLOT    4
+#define DURATION_PRESENTATION_SLOT    420
 
 // Light up first notification LED TAU_REMAINDER seconds before
 // the end of the allocated slot to indicate that "the end is near".
 //
 // You have to ensure that TAU_REMAINDER < DURATION_PRESENTATION_SLOT.
-#define TAU_REMAINDER  2
+#define TAU_REMAINDER  60
 
 // Start blinking LEDs if speaker exceeds more than
 // TAU_EXCEED seconds of the allocated presentation slot.
 //
 // For example, 10 seconds after slot should've ended.
-#define TAU_EXCEED     2
+#define TAU_EXCEED     10
 
 // How many milliseconds the LED should be on/off when blinking, i.e.
 // a full blink cycle would be 2*DURATION_BLINKING milliseconds.
 #define DURATION_BLINKING 500
+
+// How often should the display flash the previously timed duration
+// upon resetting?
+#define FLASH_PREV_DISPLAY_N_TIMES 2
 
 
 //-----------------------------------------------------------------------------
@@ -64,11 +68,13 @@
 // resets ;-)
 #define BTN_RESET_HOLD        500
 
+// 
+
 // 7-segment display brightness [0,7].
 #define SSD_BRIGHTNESS        3
 
 // Delay in microseconds between bit transition of TM1637
-#define SSD_BIT_DELAY 150
+#define SSD_BIT_DELAY 50
 
 // Enable to log debug messages on the serial monitor.
 //#define DEBUG_OUTPUT
@@ -172,7 +178,7 @@ void scw_reset()
   // Flash the previously shown data on the display twice before resetting.
   uint8_t segments[4];
   display.getSegments(segments);
-  for (uint8_t i = 0; i < 2; ++i)
+  for (uint8_t i = 0; i < FLASH_PREV_DISPLAY_N_TIMES; ++i)
   {
     display.setSegments(ssd_seg_reset);
     delay(300);
@@ -234,9 +240,9 @@ void warnSlotExceeded()
     {
       // Configure LEDs such that they alternate.
       led_blinking_started = true;
-      led_remainder.on();
+      led_remainder.off();
       led_remainder.startBlinking(DURATION_BLINKING);
-      led_timeout.off();
+      led_timeout.on();
       led_timeout.startBlinking(DURATION_BLINKING);
     }
     led_remainder.blink();
@@ -297,17 +303,6 @@ void updateLEDs(unsigned int elapsed_sec)
       }
     }
   }
-  /* TODO test (reset uses scw_reset() which already turns off all LEDs, so
-   *  no need to do it here again).
-  else
-  {
-    // We're in reset/init state, so turn off all the LEDs.
-    led_remainder.off();
-    led_timeout.off();
-#ifdef USE_STOP_WATCH_LED
-    led_stop_watch.off();
-#endif // USE_STOP_WATCH_LED
-  }*/
 }
 
 // Main loop.
@@ -337,4 +332,3 @@ void loop()
     updateLEDs(elapsed_sec);
   }
 }
-
