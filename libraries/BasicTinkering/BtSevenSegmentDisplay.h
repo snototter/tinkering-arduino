@@ -13,7 +13,7 @@
 
 // If you need to query the currently set segment data,
 // define this flag before #includ(e)ing.
-//#define SSD_STORE_SEGMENTS
+#define SSD_STORE_SEGMENTS
 
 /**
  * Utility for 4-digit 7-segment displays using TM1637.
