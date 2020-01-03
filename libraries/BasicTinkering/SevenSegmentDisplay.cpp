@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <SevenSegmentDisplay.h>
+#include <BtSevenSegmentDisplay.h>
 
 // Lookup segments for digits 0-9, A-F.
 // We need gfedcba encoding, see https://en.wikipedia.org/wiki/Seven-segment_display
@@ -9,7 +9,7 @@ const uint8_t lookup_digit_segments[] =
   0x77, 0x7c, 0x39, 0x5e, 0x79, 0x71
 };
 
-SevenSegmentDisplayTM1637::SevenSegmentDisplayTM1637(uint8_t pin_clk,
+BtSevenSegmentDisplayTM1637::BtSevenSegmentDisplayTM1637(uint8_t pin_clk,
   uint8_t pin_dio, uint8_t brightness, unsigned long bit_delay) :
   pin_clk_(pin_clk), pin_dio_(pin_dio), bit_delay_(bit_delay)
 {
@@ -27,20 +27,20 @@ SevenSegmentDisplayTM1637::SevenSegmentDisplayTM1637(uint8_t pin_clk,
   digitalWrite(pin_dio_, LOW);
 }
 
-void SevenSegmentDisplayTM1637::setBrightness(uint8_t brightness)
+void BtSevenSegmentDisplayTM1637::setBrightness(uint8_t brightness)
 {
   // 0x08 enables the digit's LED (... | 0x00 would turn the digit off).
   brightness_ = (brightness & 0x07) | 0x08;
 }
 
-void SevenSegmentDisplayTM1637::clear()
+void BtSevenSegmentDisplayTM1637::clear()
 {
   const uint8_t data[] = { 0, 0, 0, 0 };
   setSegments(data);
 }
 
 
-void SevenSegmentDisplayTM1637::displayInteger(int x)
+void BtSevenSegmentDisplayTM1637::displayInteger(int x)
 {
   // Sanity check
   if (x > 9999 || x < -999)
@@ -80,7 +80,7 @@ void SevenSegmentDisplayTM1637::displayInteger(int x)
   setSegments(segments);
 }
 
-void SevenSegmentDisplayTM1637::displayTime(uint8_t a, uint8_t b)
+void BtSevenSegmentDisplayTM1637::displayTime(uint8_t a, uint8_t b)
 {
   if (a > 99 || b > 99)
     return;
@@ -93,7 +93,7 @@ void SevenSegmentDisplayTM1637::displayTime(uint8_t a, uint8_t b)
   setSegments(segments);
 }
 
-void SevenSegmentDisplayTM1637::setSegments(const uint8_t segments[], uint8_t num_digits, uint8_t first_pos)
+void BtSevenSegmentDisplayTM1637::setSegments(const uint8_t segments[], uint8_t num_digits, uint8_t first_pos)
 {
   // Send COMM1
   start();
@@ -121,26 +121,26 @@ void SevenSegmentDisplayTM1637::setSegments(const uint8_t segments[], uint8_t nu
 #endif // SSD_STORE_SEGMENTS
 }
 
-uint8_t SevenSegmentDisplayTM1637::digitToSegment(uint8_t digit) const
+uint8_t BtSevenSegmentDisplayTM1637::digitToSegment(uint8_t digit) const
 {
   return lookup_digit_segments[digit & 0x0f];
 }
 
 #ifdef SSD_STORE_SEGMENTS
-void SevenSegmentDisplayTM1637::getSegments(uint8_t segments[]) const
+void BtSevenSegmentDisplayTM1637::getSegments(uint8_t segments[]) const
 {
   for (uint8_t i = 0; i < 4; ++i)
     segments[i] = segments_[i];
 }
 #endif // SSD_STORE_SEGMENTS
 
-void SevenSegmentDisplayTM1637::start() const
+void BtSevenSegmentDisplayTM1637::start() const
 {
   pinMode(pin_dio_, OUTPUT);
   bitDelay();
 }
 
-void SevenSegmentDisplayTM1637::stop() const
+void BtSevenSegmentDisplayTM1637::stop() const
 {
   pinMode(pin_dio_, OUTPUT);
   bitDelay();
@@ -150,7 +150,7 @@ void SevenSegmentDisplayTM1637::stop() const
   bitDelay();
 }
 
-bool SevenSegmentDisplayTM1637::sendByte(uint8_t byte) const
+bool BtSevenSegmentDisplayTM1637::sendByte(uint8_t byte) const
 {
   // Send each bit
   uint8_t data = byte;

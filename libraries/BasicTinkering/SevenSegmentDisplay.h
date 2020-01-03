@@ -12,19 +12,19 @@
 
 // If you need to query the currently set segment data,
 // define this flag before #includ(e)ing.
-#define SSD_STORE_SEGMENTS
+//#define SSD_STORE_SEGMENTS
 
 /**
  * Utility for 4-digit 7-segment displays using TM1637.
  */
-class SevenSegmentDisplayTM1637
+class BtSevenSegmentDisplayTM1637
 {
 public:
   // * CLK and DIO must be connected to digital pins
   // * Choose initial brightness in [0, 7]
   // * Adjust delay (in microseconds) for sending bits to the I2C
   //   100 worked nicely for my tested displays.
-  SevenSegmentDisplayTM1637(uint8_t pin_clk, uint8_t pin_dio,
+  BtSevenSegmentDisplayTM1637(uint8_t pin_clk, uint8_t pin_dio,
     uint8_t brightness = 7, unsigned long bit_delay = 100);
 
   // Set the brightness in [0, 7], has an effect upon next display update.

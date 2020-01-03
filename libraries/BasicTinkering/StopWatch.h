@@ -4,7 +4,7 @@
 /**
  * A simple, milliseconds-accurate, toggleable stop watch
  */
-class StopWatch
+class BtStopWatch
 {
 public:
   // Convert elapsed milliseconds to seconds.
@@ -13,7 +13,7 @@ public:
     return static_cast<double>(elapsed_ms) / 1000.0;
   }
 
-  StopWatch() 
+  BtStopWatch()
   {
     reset();
   }

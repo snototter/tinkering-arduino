@@ -1,22 +1,22 @@
 #include <Arduino.h>
-#include <LED.h>
+#include <BtLED.h>
 
 // Bit numbers for state variable
 #define STATE_STATUS  0
 #define STATE_BLINK   1
 
 
-LED::LED(uint8_t pin) : pin_(pin), state_(0x00), dim_value_(0x00)
+BtLED::BtLED(uint8_t pin) : pin_(pin), state_(0x00), dim_value_(0x00)
 {
   pinMode(pin_, OUTPUT);
 }
 
-bool LED::status() const
+bool BtLED::status() const
 {
   return bitRead(state_, STATE_STATUS);
 }
 
-void LED::on()
+void BtLED::on()
 {
   if (dim_value_)
   {
@@ -29,18 +29,18 @@ void LED::on()
   }
 }
 
-void LED::off()
+void BtLED::off()
 {
   digitalWrite(pin_, LOW);
   bitWrite(state_, STATE_STATUS, LOW);
 }
 
-void LED::toggle()
+void BtLED::toggle()
 {
   bitRead(state_, STATE_STATUS) ? off() : on();
 }
 
-void LED::startBlinking(unsigned int time)
+void BtLED::startBlinking(unsigned int time)
 {
   bitWrite(state_, STATE_BLINK, 1);
   blink_time_ = time;
@@ -48,7 +48,7 @@ void LED::startBlinking(unsigned int time)
   toggle();
 }
 
-void LED::blink()
+void BtLED::blink()
 {
   if (!bitRead(state_, STATE_BLINK))
     return;
@@ -60,13 +60,13 @@ void LED::blink()
   }
 }
 
-void LED::stopBlinking()
+void BtLED::stopBlinking()
 {
   off();
   bitWrite(state_, STATE_BLINK, 0);
 }
 
-void LED::blockingBlink(unsigned int time, unsigned int n)
+void BtLED::blockingBlink(unsigned int time, unsigned int n)
 {
   if (n == 0)
     return;
@@ -80,18 +80,18 @@ void LED::blockingBlink(unsigned int time, unsigned int n)
   off();
 }
 
-void LED::setValue(uint8_t value)
+void BtLED::setValue(uint8_t value)
 {
   analogWrite(pin_, value);
   bitWrite(state_, STATE_STATUS, value > 0);
 }
 
-void LED::setDimValue(uint8_t value)
+void BtLED::setDimValue(uint8_t value)
 {
   dim_value_ = value;
 }
 
-void LED::fadeIn(unsigned int time)
+void BtLED::fadeIn(unsigned int time)
 {
   const unsigned int dt = time / (255 / 5);
   for (uint8_t brightness = 0; brightness < 255; brightness+=5)
@@ -102,7 +102,7 @@ void LED::fadeIn(unsigned int time)
   on();
 }
 
-void LED::fadeOut(unsigned int time)
+void BtLED::fadeOut(unsigned int time)
 {
   const unsigned int dt = time / (255 / 5);
   for (uint8_t brightness = 255; brightness > 0; brightness-=5)

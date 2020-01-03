@@ -4,7 +4,7 @@
 /**
  * Utility for software-debounced buttons.
  */
-class Button
+class BtButton
 {
 public:
   // pin:              Pin number
@@ -16,7 +16,7 @@ public:
   // notify_hold_once: If true, isHeld() returns true only once (unless button
   //                   is released and pressed again). Otherwise, isHeld()
   //                   returns true as long as the button is pressed.
-  Button(uint8_t pin, unsigned int debounce_delay = 50, 
+  BtButton(uint8_t pin, unsigned int debounce_delay = 50,
     unsigned int hold_delay = 500, bool notify_hold_once = true);
 
   // Must be invoked in every loop iteration to scan the button's pin.

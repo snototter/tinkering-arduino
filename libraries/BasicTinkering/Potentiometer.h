@@ -21,11 +21,11 @@
  * 0 < NUM_BINS <= BT_ADC_RESOLUTION.
  */
 template <uint16_t NUM_BINS>
-class Potentiometer
+class BtPotentiometer
 {
 public:
   // Set the pin number upon construction.
-    Potentiometer(uint8_t pin) : pin_(pin) {}
+    BtPotentiometer(uint8_t pin) : pin_(pin) {}
 
   // Return the current value.
   uint16_t readValue() const

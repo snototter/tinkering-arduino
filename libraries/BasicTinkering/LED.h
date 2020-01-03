@@ -4,11 +4,11 @@
 /**
  * Wrapper for LEDs (supports blocking/non-blocking blinking).
  */
-class LED
+class BtLED
 {
 public:
   // Set the pin number upon construction.
-  LED(uint8_t pin);
+  BtLED(uint8_t pin);
 
   // Returns current pin state.
   bool status() const;

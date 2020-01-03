@@ -1,6 +1,5 @@
 #include <Arduino.h>
-#include <Button.h>
-//#include <BTDefinitions.h>
+#include <BtButton.h>
 
 // Bit numbers
 #define STATE_CURRENT  0
@@ -16,7 +15,7 @@
 // Store if we already notified of a hold now
 #define STATE_HOLD_NOTIFIED 7
 
-Button::Button(uint8_t pin, unsigned int debounce_delay, unsigned int hold_delay,
+BtButton::BtButton(uint8_t pin, unsigned int debounce_delay, unsigned int hold_delay,
   bool notify_hold_once) : pin_(pin), state_(0x00), debounce_delay_(debounce_delay),
   debounce_start_(millis()), hold_delay_(hold_delay)
 {
@@ -34,7 +33,7 @@ Button::Button(uint8_t pin, unsigned int debounce_delay, unsigned int hold_delay
   //Serial.println(bitRead(state_, STATE_PREVIOUS));
 }
 
-bool Button::read()
+bool BtButton::read()
 {
   const unsigned long now = millis();
   const int scan = digitalRead(pin_);
@@ -88,22 +87,22 @@ bool Button::read()
   return bitRead(state_, STATE_CURRENT);
 }
 
-bool Button::isPressed() const
+bool BtButton::isPressed() const
 {
   return bitRead(state_, STATE_CURRENT);
 }
 
-bool Button::isHeld() const
+bool BtButton::isHeld() const
 {
   return bitRead(state_, STATE_HOLD_NOTIFY);
 }
 
-bool Button::changed() const
+bool BtButton::changed() const
 {
   return bitRead(state_, STATE_CHANGED);
 }
 
-bool Button::changedToPressed() const
+bool BtButton::changedToPressed() const
 {
   return bitRead(state_, STATE_CHANGED) & bitRead(state_, STATE_CURRENT);
 }
