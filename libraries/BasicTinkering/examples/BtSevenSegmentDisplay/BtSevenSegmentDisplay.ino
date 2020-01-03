@@ -4,10 +4,10 @@
 // Segments to show "--:--"
 const uint8_t SEG_STRIKE[] = 
 {
-  SEG_G,
-  SEG_G | SEG_COLON,
-  SEG_G,
-  SEG_G
+  BT_SSD_SEG_G,
+  BT_SSD_SEG_G | BT_SSD_SEG_COLON,
+  BT_SSD_SEG_G,
+  BT_SSD_SEG_G
 };
 
 BtSevenSegmentDisplayTM1637 display(2, 3);

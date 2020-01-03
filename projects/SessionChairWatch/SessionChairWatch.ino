@@ -67,7 +67,7 @@
 #define SSD_BRIGHTNESS        7
 
 // Delay in microseconds between bit transition of TM1637
-#define SSD_BIT_DELAY 150
+#define SSD_BIT_DELAY 50
 
 // Enable to log debug messages on the serial monitor.
 //#define DEBUG_OUTPUT

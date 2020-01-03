@@ -68,12 +68,12 @@ stop													KEYWORD2
 BT_ADC_RESOLUTION							LITERAL1
 
 # BtSevenSegmentDisplayTM1637
-SEG_A													LITERAL1
-SEG_B													LITERAL1
-SEG_C													LITERAL1
-SEG_D													LITERAL1
-SEG_E													LITERAL1
-SEG_F													LITERAL1
-SEG_G													LITERAL1
-SEG_COLON											LITERAL1
+BT_SSD_SEG_A									LITERAL1
+BT_SSD_SEG_B									LITERAL1
+BT_SSD_SEG_C									LITERAL1
+BT_SSD_SEG_D									LITERAL1
+BT_SSD_SEG_E									LITERAL1
+BT_SSD_SEG_F									LITERAL1
+BT_SSD_SEG_G									LITERAL1
+BT_SSD_SEG_COLON							LITERAL1
 
