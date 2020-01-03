@@ -28,4 +28,5 @@ Deployable tinkering projects.
 # TODO List
 * add scheduling functionality to basictinkering
 * test scheduling functionality
+* use digitalwrite (or direct port access) instead of pinmode https://github.com/bremme/arduino-tm1637/tree/master/src vs https://github.com/avishorp/TM1637
 * new repo for library, register with lib manager: https://github.com/arduino/Arduino/wiki/Library-Manager-FAQ
