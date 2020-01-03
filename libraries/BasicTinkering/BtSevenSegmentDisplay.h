@@ -1,6 +1,7 @@
 #ifndef __BASIC_TINKERING_SEVEN_SEGMENT_DISPLAY__
 #define __BASIC_TINKERING_SEVEN_SEGMENT_DISPLAY__
 
+//TODO prefix with BT_SSD
 #define SEG_A     0b00000001
 #define SEG_B     0b00000010
 #define SEG_C     0b00000100
