@@ -187,7 +187,7 @@ void setup()
 }
 
 
-// Switch state to resetting.
+// Switch state to "resetting".
 void startResetting()
 {
   // Reset variables
@@ -200,7 +200,7 @@ void startResetting()
   // 7-segment display).
   prev_elapsed_sec = 10000;
 
-    // Turn on all lights during resetting.
+  // Turn on all lights during resetting.
   led_remainder.on();
   led_timeout.on();
 #ifdef USE_STOP_WATCH_LED
@@ -233,6 +233,11 @@ void loopResetting()
       // Only update the display if we need to change it actually:
       if (ssd_reset_currently_shown != SSD_RESET_BLANK)
       {
+        led_remainder.on();
+        led_timeout.on();
+#ifdef USE_STOP_WATCH_LED
+        led_stop_watch.on();
+#endif // USE_STOP_WATCH_LED
         display.setSegments(ssd_seg_reset);
         ssd_reset_currently_shown = SSD_RESET_BLANK;
       }
@@ -242,6 +247,11 @@ void loopResetting()
       // Again, prevent updating the display too often/fast:
       if (ssd_reset_currently_shown != SSD_RESET_PREVDISP)
       {
+        led_remainder.off();
+        led_timeout.off();
+#ifdef USE_STOP_WATCH_LED
+        led_stop_watch.off();
+#endif // USE_STOP_WATCH_LED
         display.setSegments(ssd_previous_segments);
         ssd_reset_currently_shown = SSD_RESET_PREVDISP;
       }
