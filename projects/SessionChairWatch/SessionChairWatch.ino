@@ -173,7 +173,7 @@ void setup()
 {
   // Blue and red LEDs are pretty bright, so dim them down.
   led_remainder.setDimValue(128);
-  led_timeout.setDimValue(64);
+  led_timeout.setDimValue(128);
 
   // Start by showing "--:--"
   display.setSegments(ssd_seg_reset);
