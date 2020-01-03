@@ -3,11 +3,11 @@ Tinkering projects using Arduino. This repository consists of custom libraries a
 
 # BasicTinkering Library
 A collection of wrappers for commonly used electronic components. Quite useful for tinkering and keeping embedded code maintainable. Includes wrappers for:
-* `Button` - software-debounced push-buttons/triggers.
-* `LED` - standard on/off plus blinking/fading capabilities (if LED is wired to a PWM-enabled pin).
-* `Potentiometer` - allows binning the potentiometer value.
-* `SevenSegmentDisplay` - 7-segment display wrappers currently supporting `TM1637` (4-digit) digital tubes.
-* `StopWatch` - measures time.
+* `BtButton` - software-debounced push-buttons/triggers.
+* `BtLED` - standard on/off plus blinking/fading capabilities (if LED is wired to a PWM-enabled pin).
+* `BtPotentiometer` - allows binning the potentiometer value.
+* `BtSevenSegmentDisplay` - 7-segment display wrappers currently supporting `TM1637` (4-digit) digital tubes.
+* `BtStopWatch` - measures time.
 
 # Tinkering Projects
 Deployable tinkering projects.
@@ -24,3 +24,8 @@ Deployable tinkering projects.
 * Source at `projects/SessionChairWatch`.
 
 ![Example image for Session Chair project](./projects/SessionChairWatch/session-chair.jpg "Session Chair's Stop Watch")
+
+# TODO List
+* add scheduling functionality to basictinkering
+* test scheduling functionality
+* new repo for library, register with lib manager: https://github.com/arduino/Arduino/wiki/Library-Manager-FAQ
