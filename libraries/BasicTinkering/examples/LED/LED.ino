@@ -1,8 +1,8 @@
-#include <LED.h>
+#include <BtLED.h>
 
 #define DELAY 1000
 
-LED led(9);
+BtLED led(9);
 void setup() {}
 
 void loop()
@@ -31,5 +31,3 @@ void loop()
   }
   led.stopBlinking();
 }
-
-

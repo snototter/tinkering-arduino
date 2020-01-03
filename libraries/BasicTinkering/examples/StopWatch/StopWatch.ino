@@ -1,6 +1,6 @@
-#include <StopWatch.h>
+#include <BtStopWatch.h>
 
-StopWatch stop_watch;
+BtStopWatch stop_watch;
 uint8_t iteration = 0;
 
 void setup() 

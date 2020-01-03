@@ -1,8 +1,8 @@
-#include <Potentiometer.h>
+#include <BtPotentiometer.h>
 
 // We connect a potentiometer at (5V, GND, and) A1.
 // Split the potentiometer's range into 5 bins.
-Potentiometer<5> poti(15);
+BtPotentiometer<5> poti(15);
 
 uint16_t prev_value = 65535;
 
@@ -31,4 +31,3 @@ void loop()
   }
   delay(200);
 }
-

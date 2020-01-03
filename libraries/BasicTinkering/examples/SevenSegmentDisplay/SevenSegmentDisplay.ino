@@ -1,4 +1,4 @@
-#include <SevenSegmentDisplay.h>
+#include <BtSevenSegmentDisplay.h>
 
 #define DELAY 1500
 // Segments to show "--:--"
@@ -10,7 +10,7 @@ const uint8_t SEG_STRIKE[] =
   SEG_G
 };
 
-SevenSegmentDisplayTM1637 display(2, 3);
+BtSevenSegmentDisplayTM1637 display(2, 3);
 
 void setup() {}
 

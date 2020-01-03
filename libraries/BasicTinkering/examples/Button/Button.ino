@@ -1,8 +1,8 @@
-#include <Button.h>
+#include <BtButton.h>
 
 // We connect two buttons at D6 and D7
-Button btn1(6, 50, 500, false); // Will be very verbose upon being held
-Button btn2(7);        // Will only notify us once for every hold event
+BtButton btn1(6, 50, 500, false); // Will be very verbose upon being held
+BtButton btn2(7);        // Will only notify us once for every hold event
 
 void setup()
 {
@@ -39,4 +39,3 @@ void loop()
   if (btn2.isHeld())
     Serial.println("Button 2 is on hold!");
 }
-
