@@ -124,7 +124,7 @@ BtLED led_stop_watch(PIN_LED_STOP_WATCH);
 BtSevenSegmentDisplayTM1637 display(PIN_SSD_CLK, PIN_SSD_DIO, SSD_BRIGHTNESS, SSD_BIT_DELAY);
 
 // Should be obvious...
-BtStopWatch stop_watch;
+BtStopWatchMillis stop_watch;
 
 // The previously displayed presentation time.
 unsigned int prev_elapsed_sec;

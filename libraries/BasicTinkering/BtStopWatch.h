@@ -1,16 +1,21 @@
 #ifndef __BASIC_TINKERING_STOP_WATCH__
 #define __BASIC_TINKERING_STOP_WATCH__
 
+#include <Arduino.h>
 /**
- * A simple, milliseconds-accurate, toggleable stop watch
+ * A simple toggleable stop watch.
+ * * TFX = {millis or micros}
+ *         a function handle
+ * * TPS = how many counts (of TFX) are in a second?
  */
+template<unsigned long (*TFX)(void), unsigned long TPS>
 class BtStopWatch
 {
 public:
-  // Convert elapsed milliseconds to seconds.
-  static double toSeconds(unsigned long elapsed_ms)
+  // Convert result from watch.elapsed() to seconds.
+  static double toSeconds(unsigned long elapsed_ticks)
   {
-    return static_cast<double>(elapsed_ms) / 1000.0;
+    return static_cast<double>(elapsed_ticks) / static_cast<double>(TPS);
   }
 
   BtStopWatch()
@@ -22,7 +27,7 @@ public:
   {
     if (is_running_)
     {
-      const unsigned long e = millis() - start_time_;
+      const unsigned long e = TFX() - start_time_;
       return elapsed_ + e;
     }
     return elapsed_;
@@ -37,7 +42,7 @@ public:
   void start()
   {
     is_running_ = true;
-    start_time_ = millis();
+    start_time_ = TFX();
   }
 
   void toggle()
@@ -64,4 +69,7 @@ private:
   unsigned long elapsed_;     //< We accumulate elapsed time (needed because of toggle/pause)
   bool is_running_;
 };
-#endif //__UTILS_STOP_WATCH__
+
+typedef BtStopWatch<millis, 1000> BtStopWatchMillis;
+typedef BtStopWatch<micros, 1000000> BtStopWatchMicros;
+#endif
