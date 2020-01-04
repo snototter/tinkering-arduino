@@ -76,7 +76,7 @@ void BtSevenSegmentDisplayTM1637::displayInteger(int x)
   }
   segments[3] = digitToSegment(x % 10);
   if (negative)
-    segments[nlz-1] = SEG_G;
+    segments[nlz-1] = BT_SSD_SEG_G;
   setSegments(segments);
 }
 
@@ -87,7 +87,7 @@ void BtSevenSegmentDisplayTM1637::displayTime(uint8_t a, uint8_t b)
 
   uint8_t segments[4];
   segments[0] = digitToSegment(a / 10);
-  segments[1] = digitToSegment(a % 10) | SEG_COLON;
+  segments[1] = digitToSegment(a % 10) | BT_SSD_SEG_COLON;
   segments[2] = digitToSegment(b / 10);
   segments[3] = digitToSegment(b % 10);
   setSegments(segments);

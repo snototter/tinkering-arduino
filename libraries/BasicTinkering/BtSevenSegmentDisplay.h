@@ -1,18 +1,19 @@
 #ifndef __BASIC_TINKERING_SEVEN_SEGMENT_DISPLAY__
 #define __BASIC_TINKERING_SEVEN_SEGMENT_DISPLAY__
 
-//TODO prefix with BT_SSD
-#define SEG_A     0b00000001
-#define SEG_B     0b00000010
-#define SEG_C     0b00000100
-#define SEG_D     0b00001000
-#define SEG_E     0b00010000
-#define SEG_F     0b00100000
-#define SEG_G     0b01000000
-#define SEG_COLON 0b10000000
+// Bit codes to enable different digit segments via setSegments.
+#define BT_SSD_SEG_A     0b00000001
+#define BT_SSD_SEG_B     0b00000010
+#define BT_SSD_SEG_C     0b00000100
+#define BT_SSD_SEG_D     0b00001000
+#define BT_SSD_SEG_E     0b00010000
+#define BT_SSD_SEG_F     0b00100000
+#define BT_SSD_SEG_G     0b01000000
+#define BT_SSD_SEG_COLON 0b10000000
 
-// If you need to query the currently set segment data,
-// define this flag before #includ(e)ing.
+// If defined, the display will store the currently displayed segments
+// and you can query them via getSegments(). Otherwise, you can save
+// 4 bytes of precious memory.
 #define SSD_STORE_SEGMENTS
 
 /**

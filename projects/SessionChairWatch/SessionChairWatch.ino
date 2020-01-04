@@ -132,10 +132,10 @@ unsigned int prev_elapsed_sec;
 // Raw 7-segment display data to show "--:--", i.e. we're in reset/init state.
 const uint8_t ssd_seg_reset[] = 
 {
-  SEG_G,
-  SEG_G | SEG_COLON,
-  SEG_G,
-  SEG_G
+  BT_SSD_SEG_G,
+  BT_SSD_SEG_G | BT_SSD_SEG_COLON,
+  BT_SSD_SEG_G,
+  BT_SSD_SEG_G
 };
 
 
