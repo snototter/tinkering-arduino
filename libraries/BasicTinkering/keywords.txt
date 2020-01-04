@@ -6,11 +6,13 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-BtButton												KEYWORD1
-BtLED														KEYWORD1
-BtPotentiometer									KEYWORD1
-BtSevenSegmentDisplayTM1637			KEYWORD1
-BtStopWatch											KEYWORD1
+BtButton											KEYWORD1
+BtLED													KEYWORD1
+BtPotentiometer								KEYWORD1
+BtSevenSegmentDisplayTM1637		KEYWORD1
+BtStopWatch										KEYWORD1
+BtStopWatchMillis							KEYWORD1
+BtStopWatchMicros							KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
