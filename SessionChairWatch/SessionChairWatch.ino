@@ -405,8 +405,10 @@ void loop()
     // speaker is currently presenting or has finished).
     // Otherwise, the display will already/still show "--:--" and
     // all relevant variables will be reset/initialized.
-    if (program_state == PROGSTATE_TALK)
-      startResetting();
+    // However, it's more satisfactory if all the lights flash
+    // whenever we press the button ;-)
+    //if (program_state == PROGSTATE_TALK)
+    startResetting();
   }
 
   // Handle start/pause/stop.
