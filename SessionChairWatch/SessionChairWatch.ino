@@ -67,7 +67,7 @@
 #define SSD_BRIGHTNESS        7
 
 // Delay in microseconds between bit transition of TM1637
-#define SSD_BIT_DELAY 50
+#define SSD_BIT_DELAY         100
 
 // Enable to log debug messages on the serial monitor.
 //#define DEBUG_OUTPUT
@@ -124,7 +124,7 @@ BtLED led_stop_watch(PIN_LED_STOP_WATCH);
 BtSevenSegmentDisplayTM1637 display(PIN_SSD_CLK, PIN_SSD_DIO, SSD_BRIGHTNESS, SSD_BIT_DELAY);
 
 // Should be obvious...
-BtStopWatch stop_watch;
+BtStopWatchMillis stop_watch;
 
 // The previously displayed presentation time.
 unsigned int prev_elapsed_sec;
@@ -132,10 +132,10 @@ unsigned int prev_elapsed_sec;
 // Raw 7-segment display data to show "--:--", i.e. we're in reset/init state.
 const uint8_t ssd_seg_reset[] = 
 {
-  SEG_G,
-  SEG_G | SEG_COLON,
-  SEG_G,
-  SEG_G
+  BT_SSD_SEG_G,
+  BT_SSD_SEG_G | BT_SSD_SEG_COLON,
+  BT_SSD_SEG_G,
+  BT_SSD_SEG_G
 };
 
 
@@ -405,8 +405,10 @@ void loop()
     // speaker is currently presenting or has finished).
     // Otherwise, the display will already/still show "--:--" and
     // all relevant variables will be reset/initialized.
-    if (program_state == PROGSTATE_TALK)
-      startResetting();
+    // However, it's more satisfactory if all the lights flash
+    // whenever we press the button ;-)
+    //if (program_state == PROGSTATE_TALK)
+    startResetting();
   }
 
   // Handle start/pause/stop.
