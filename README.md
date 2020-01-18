@@ -6,7 +6,8 @@ Previously, this repository also hosted an Arduino library which is now availabl
 ## Garduino: Automated Plant Watering
 * A low-power tinkering project to water my tomatoes and chili plants.
 * Only useful to lookup stuff on interrupts, watch dog timers, low-power consumption, setting/using ADC reference voltage, measuring battery levels, etc. This project doesn't build currently (need to find out proper versions -- should be around 2016/2017 -- of external libraries).
-* Recovered the source from an older disk backup. Will definitely take some time before I get around to fix it/redeploy it (hopefully next gardening season). 
+* Recovered the source from an older disk backup. Will definitely take some time before I get around to fix it/redeploy it (hopefully next gardening season).
+
 ![Example image for Garduino](./Garduino/garduino.jpg "The magic watering box")
 
 
