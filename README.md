@@ -14,6 +14,7 @@ Previously, this repository also hosted an Arduino library which is now availabl
 ## Session Chair's Stop Watch
 * A stop watch for session chairs (and speakers) to keep an eye on/measure presentation time.
 * Shows the presentation time, notifies speakers of their last X minutes (notification LED) and goes crazy (flashing LEDs) once they exceed their allocated slot.
+* Implemented using an Arduino Nano (ATmega168).
 
 ![Example image for Session Chair project](./SessionChairWatch/session-chair.jpg "Session Chair's Stop Watch")
 
